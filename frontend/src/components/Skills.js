@@ -2,6 +2,34 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/Skills.css";
 
+// Mock data as fallback
+const mockSkills = {
+  frontend: [
+    { name: "React.js", level: 90, icon: "fab fa-react" },
+    { name: "JavaScript", level: 85, icon: "fab fa-js-square" },
+    { name: "HTML5", level: 95, icon: "fab fa-html5" },
+    { name: "CSS3", level: 90, icon: "fab fa-css3-alt" },
+    { name: "TypeScript", level: 80, icon: "fab fa-js-square" },
+    { name: "Vue.js", level: 75, icon: "fab fa-vuejs" },
+  ],
+  backend: [
+    { name: "Node.js", level: 85, icon: "fab fa-node-js" },
+    { name: "Express.js", level: 80, icon: "fas fa-server" },
+    { name: "Python", level: 75, icon: "fab fa-python" },
+    { name: "MongoDB", level: 70, icon: "fas fa-database" },
+    { name: "PostgreSQL", level: 65, icon: "fas fa-database" },
+    { name: "REST APIs", level: 85, icon: "fas fa-code" },
+  ],
+  tools: [
+    { name: "Git", level: 90, icon: "fab fa-git-alt" },
+    { name: "VS Code", level: 95, icon: "fas fa-code" },
+    { name: "Docker", level: 70, icon: "fab fa-docker" },
+    { name: "AWS", level: 65, icon: "fab fa-aws" },
+    { name: "Figma", level: 75, icon: "fab fa-figma" },
+    { name: "Postman", level: 80, icon: "fas fa-code" },
+  ],
+};
+
 const Skills = () => {
   const [skills, setSkills] = useState({});
   const [loading, setLoading] = useState(true);
@@ -17,8 +45,9 @@ const Skills = () => {
       const response = await axios.get("/api/skills");
       setSkills(response.data);
     } catch (err) {
-      setError("Failed to load skills");
-      console.error("Error fetching skills:", err);
+      console.log("API not available, using mock data");
+      setSkills(mockSkills);
+      setError(null);
     } finally {
       setLoading(false);
     }
