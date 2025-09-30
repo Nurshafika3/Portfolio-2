@@ -28,7 +28,8 @@ const mockProjects = [
   {
     id: 3,
     title: "hiHealth Mobile Application",
-    description: "HiHealth is a comprehensive mobile health application built with Ionic Angular that provides users with detailed information about common diseases and health conditions. This application serves as a digital health companion, offering symptoms, causes, treatments, and preventive measures for various medical conditions.",
+    description:
+      "HiHealth is a comprehensive mobile health application built with Ionic Angular that provides users with detailed information about common diseases and health conditions. This application serves as a digital health companion, offering symptoms, causes, treatments, and preventive measures for various medical conditions.",
     technologies: ["JavaScript", "HTML5", "CSS3", "Weather API"],
     githubUrl: "https://github.com/Nurshafika3/HiHealth",
     imageUrl: "/images/project3.jpg",
