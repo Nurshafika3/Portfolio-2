@@ -35,7 +35,7 @@
   color: white;
   margin-bottom: 2rem;
   text-align: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #1f6fe5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -98,7 +98,7 @@
 
 .skill-progress {
   height: 100%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #1f6fe5 100%);
   border-radius: 4px;
   transition: width 1s ease-in-out;
   animation: skillLoad 2s ease-in-out;
@@ -135,7 +135,7 @@
   font-size: 1.4rem;
   color: white;
   margin-bottom: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #1f6fe5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -158,7 +158,7 @@
   font-size: 2rem;
   color: white;
   margin-bottom: 2rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #1f6fe5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -185,7 +185,7 @@
 }
 
 .learning-item:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #1f6fe5 100%);
   transform: translateY(-3px);
   box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
 }

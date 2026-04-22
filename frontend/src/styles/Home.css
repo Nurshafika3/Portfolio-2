@@ -1,8 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
 .home {
+  --about-bg: #02070f;
+  --about-border: rgba(112, 182, 255, 0.18);
+  --about-text-soft: #9fb3cc;
+  --about-cyan: #56d5ff;
+  --about-surface: rgba(3, 13, 25, 0.78);
   min-height: 100vh;
   display: flex;
   align-items: center;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  background:
+    radial-gradient(circle at 50% 18%, rgba(0, 124, 248, 0.25), transparent 40%),
+    radial-gradient(circle at 16% 72%, rgba(7, 68, 120, 0.3), transparent 42%),
+    radial-gradient(circle at 84% 74%, rgba(1, 45, 95, 0.34), transparent 44%),
+    var(--about-bg);
+  font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  color: #eaf2ff;
   position: relative;
   overflow: hidden;
 }
@@ -21,7 +34,7 @@
     ),
     radial-gradient(
       circle at 80% 20%,
-      rgba(118, 75, 162, 0.1) 0%,
+      rgba(39, 111, 214, 0.1) 0%,
       transparent 50%
     );
   pointer-events: none;
@@ -35,12 +48,151 @@
   z-index: 1;
 }
 
-.home-content {
+.about-home-container {
   display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 2rem;
+  align-items: start;
+  padding-top: 2rem;
+  padding-bottom: 3rem;
+}
+
+.about-main {
+  width: 100%;
+}
+
+/* ─── Sticky ToC ─── */
+.about-toc {
+  position: sticky;
+  top: 90px;
+  background: rgba(5, 14, 28, 0.72);
+  border: 1px solid var(--about-border);
+  border-radius: 16px;
+  padding: 1rem;
+  /* subtle entrance */
+  animation: fadeSlideInLeft 0.6s ease both;
+}
+
+.about-toc h3 {
+  color: #eaf2ff;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.about-toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.about-toc li {
+  margin-bottom: 0.4rem;
+}
+
+/* ─── ToC Links with sliding indicator ─── */
+.about-toc a {
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: var(--about-text-soft);
+  text-decoration: none;
+  font-size: 0.95rem;
+  padding: 0.3rem 0.5rem 0.3rem 0.75rem;
+  border-radius: 6px;
+  transition: color 0.25s ease, background 0.25s ease, padding-left 0.25s ease;
+  overflow: hidden;
+}
+
+/* The sliding left-bar indicator */
+.toc-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 70%;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #56d5ff, #5a79ff);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.25s ease;
+  opacity: 0;
+}
+
+/* Active state — indicator slides in, text shifts right */
+.about-toc a.toc-active {
+  color: #c9ecff;
+  background: rgba(86, 213, 255, 0.08);
+  padding-left: 1.1rem;
+}
+
+.about-toc a.toc-active .toc-indicator {
+  transform: translateY(-50%) scaleY(1);
+  opacity: 1;
+}
+
+.about-toc a:hover:not(.toc-active) {
+  color: #c9ecff;
+  background: rgba(86, 213, 255, 0.05);
+  padding-left: 1rem;
+}
+
+.about-toc a:hover:not(.toc-active) .toc-indicator {
+  transform: translateY(-50%) scaleY(0.5);
+  opacity: 0.4;
+}
+
+.about-toc-sublist {
+  padding-left: 0.85rem !important;
+  margin-top: 0.35rem !important;
+  border-left: 1px solid rgba(112, 182, 255, 0.24);
+}
+
+.about-toc-sublist .about-toc a,
+.about-toc-sublist a {
+  font-size: 0.88rem;
+}
+
+/* ─── Section slide-in animation ─── */
+.about-section,
+.about-intro {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.about-section.section-visible,
+.about-intro.section-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger each card inside a section */
+.about-section.section-visible .about-card:nth-child(1) { transition-delay: 0.05s; }
+.about-section.section-visible .about-card:nth-child(2) { transition-delay: 0.12s; }
+.about-section.section-visible .about-card:nth-child(3) { transition-delay: 0.19s; }
+
+.about-section .about-card {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.about-section.section-visible .about-card {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Rest of existing styles (unchanged) ─── */
+.home-content {
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
   align-items: center;
   min-height: 80vh;
+}
+
+.about-intro {
+  min-height: auto;
+  margin-bottom: 2rem;
 }
 
 .home-text {
@@ -48,15 +200,16 @@
 }
 
 .home-title {
-  font-size: 3.5rem;
+  font-size: 2.5rem;
   font-weight: 700;
   line-height: 1.2;
   margin-bottom: 1rem;
-  color: white;
+  color: #f7fbff;
+  margin-top: 3rem;
 }
 
 .highlight {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #1f6fe5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -64,17 +217,46 @@
 
 .home-subtitle {
   font-size: 1.5rem;
-  color: #a0a0a0;
+  color: #c5daef;
   margin-bottom: 1.5rem;
   font-weight: 400;
 }
 
 .home-description {
   font-size: 1.1rem;
-  color: #c0c0c0;
+  color: var(--about-text-soft);
   margin-bottom: 2.5rem;
   line-height: 1.8;
   max-width: 500px;
+}
+
+.about-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-bottom: 1.4rem;
+}
+
+.about-location {
+  color: #d7e8f8;
+  font-size: 0.95rem;
+}
+
+.about-language-tags,
+.about-skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.about-tag {
+  display: inline-flex;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(147, 201, 255, 0.12);
+  border: 1px solid rgba(131, 189, 255, 0.28);
+  color: #d6e6fa;
+  font-size: 0.85rem;
 }
 
 .home-buttons {
@@ -94,19 +276,19 @@
   justify-content: center;
   width: 45px;
   height: 45px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(3, 12, 23, 0.74);
+  border: 1px solid rgba(131, 189, 255, 0.25);
   border-radius: 50%;
-  color: #a0a0a0;
+  color: #c5daef;
   font-size: 1.2rem;
   transition: all 0.3s ease;
 }
 
 .social-links a:hover {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(120deg, #63d5ff, #5a79ff);
+  color: #04162e;
   transform: translateY(-3px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 10px 25px rgba(84, 167, 255, 0.28);
 }
 
 .home-image {
@@ -120,7 +302,7 @@
   width: 350px;
   height: 350px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #1f6fe5 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -138,10 +320,69 @@
   right: -10px;
   bottom: -10px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #667eea 0%, #1f6fe5 100%);
   opacity: 0.3;
   z-index: -1;
   animation: pulse 2s infinite;
+}
+
+.about-section {
+  margin-bottom: 2rem;
+}
+
+.about-section-title {
+  color: #eaf2ff;
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+.about-cards {
+  display: grid;
+  gap: 1rem;
+}
+
+.about-card {
+  background: var(--about-surface);
+  border: 1px solid rgba(120, 173, 255, 0.22);
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
+}
+
+.about-card h4 {
+  margin: 0;
+  color: #eaf2ff;
+  font-size: 1.1rem;
+}
+
+.about-card p {
+  margin: 0.7rem 0;
+  color: #9db3cd;
+  line-height: 1.6;
+}
+
+.about-card ul {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: #9db3cd;
+  line-height: 1.6;
+}
+
+.about-card-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.about-card-heading span {
+  color: #9fb3cc;
+  font-size: 0.85rem;
+}
+
+.about-role {
+  color: #90e1ff !important;
+  margin-top: 0.45rem !important;
+  margin-bottom: 0.8rem !important;
 }
 
 .scroll-indicator {
@@ -162,7 +403,7 @@
   display: block;
   width: 6px;
   height: 6px;
-  background: #667eea;
+  background: var(--about-cyan);
   border-radius: 50%;
   margin: 2px 0;
   animation: scrollAnimation 2s infinite;
@@ -176,7 +417,18 @@
   animation-delay: 0.3s;
 }
 
-/* Animations */
+/* ─── Keyframes ─── */
+@keyframes fadeSlideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 @keyframes slideInLeft {
   from {
     opacity: 0;
@@ -239,8 +491,23 @@
   }
 }
 
-/* Mobile Styles */
+/* ─── Mobile ─── */
 @media (max-width: 768px) {
+  .about-home-container {
+    grid-template-columns: 1fr;
+    padding-top: 1.5rem;
+  }
+
+  .about-toc {
+    position: static;
+    order: 2;
+    animation: none;
+  }
+
+  .about-main {
+    order: 1;
+  }
+
   .home-content {
     grid-template-columns: 1fr;
     text-align: center;
@@ -269,9 +536,22 @@
     justify-content: center;
   }
 
+  .about-card-heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
   .image-placeholder {
     width: 250px;
     height: 250px;
     font-size: 6rem;
+  }
+
+  /* Sections still animate on mobile */
+  .about-section,
+  .about-intro {
+    opacity: 0;
+    transform: translateY(24px);
   }
 }

@@ -1,111 +1,58 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "../styles/About.css";
 
 const About = () => {
+  const featuredBlocks = [
+    {
+      title: "Featured Work",
+      description:
+        "Production-ready full stack builds with clean UI systems and practical backend architecture.",
+      action: "See projects",
+      link: "/projects",
+      tone: "work",
+    },
+    {
+      title: "Skill Stack",
+      description:
+        "React, Node.js, Express, and modern frontend tooling focused on performance and usability.",
+      action: "View skills",
+      link: "/skills",
+      tone: "gallery",
+    },
+  ];
+
   return (
     <section className="about">
+      <div className="about-glow about-glow-left"></div>
+      <div className="about-glow about-glow-right"></div>
+
       <div className="container">
-        <div className="about-header">
-          <h1 className="section-title">About Me</h1>
-          <p className="section-subtitle">
-            Get to know more about who I am and what I do
+        <div className="about-hero">
+          <div className="about-pill-group">
+            <span className="about-pill about-pill-strong">Portfolio</span>
+            <span className="about-pill">Nurshafika</span>
+          </div>
+
+          <h1 className="about-title">Shafika · Dev & Design</h1>
+
+          <p className="about-lead">
+           Beginner coder. Big enthusiasm. I focus on clarity, performance, and making products people actually enjoy while learning as I go.
           </p>
-        </div>
 
-        <div className="about-content">
-          <div className="about-image">
-            <div className="image-placeholder">
-              <i className="fas fa-user"></i>
-            </div>
-          </div>
+          <Link className="about-profile" to="/about" aria-label="Open about page">
+            <span className="about-avatar">NS</span>
+            <span className="about-profile-text">About Me</span>
+          </Link>
 
-          <div className="about-text">
-            <h2>Hello! I'm a Junior Software Engineer</h2>
-            <p>
-              I'm passionate about creating digital experiences that make a
-              difference. With expertise in both frontend and backend
-              technologies, I enjoy building complete web applications from
-              concept to deployment.
-            </p>
-            <p>
-              My journey in web development started two years ago, and since
-              then I've worked on various projects ranging from small business
-              websites to large-scale applications. I'm always eager to learn
-              new technologies and take on challenging projects.
-            </p>
-
-            <div className="about-stats">
-              <div className="stat">
-                <h3>2+</h3>
-                <p>Projects Completed</p>
-              </div>
-              <div className="stat">
-                <h3>1+</h3>
-                <p>Years Experience</p>
-              </div>
-            </div>
-
-            <div className="about-interests">
-              <h3>When I'm not coding, I enjoy:</h3>
-              <ul>
-                <li>
-                  <i className="fas fa-book"></i> Reading tech blogs and
-                  documentation
-                </li>
-                <li>
-                  <i className="fas fa-music"></i> Listening to music and
-                  podcasts
-                </li>
-                <li>
-                  <i className="fas fa-hiking"></i> Outdoor activities and
-                  hiking
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        <div className="about-timeline">
-          <h2>My Journey</h2>
-          <div className="timeline">
-            <div className="timeline-item">
-              <div className="timeline-date">2025</div>
-              <div className="timeline-content">
-                <h3>Junior Software Developer</h3>
-                <p>
-                  Keep learning as a junior developer.
-                </p>
-              </div>
-            </div>
-            <div className="timeline-item">
-              <div className="timeline-date">2024</div>
-              <div className="timeline-content">
-                <h3>Junior Software Developer</h3>
-                <p>
-                  Developed and maintained multiple client projects using React
-                  and Node.js when internship 
-                </p>
-              </div>
-            </div>
-            <div className="timeline-item">
-              <div className="timeline-date">2023</div>
-              <div className="timeline-content">
-                <h3>Frontend Developer</h3>
-                <p>
-                  Specialized in creating responsive and interactive user
-                  interfaces.
-                </p>
-              </div>
-            </div>
-            <div className="timeline-item">
-              <div className="timeline-date">2023</div>
-              <div className="timeline-content">
-                <h3>Started Web Development Journey</h3>
-                <p>
-                  Began learning web development and built my first projects.
-                </p>
-              </div>
-            </div>
+          <div className="about-feature-grid">
+            {featuredBlocks.map((block) => (
+              <article key={block.title} className={`about-feature-card ${block.tone}`}>
+                <h3>{block.title}</h3>
+                <p>{block.description}</p>
+                <Link to={block.link}>{block.action}</Link>
+              </article>
+            ))}
           </div>
         </div>
       </div>
