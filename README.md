@@ -13,13 +13,13 @@ Portfolio/
 
 ## Features
 
-- 🎨 Modern, responsive design
-- ⚡ Fast React.js frontend
-- 🚀 Express.js backend API
-- 📱 Mobile-first responsive design
-- 💼 Portfolio showcase
-- 📧 Contact form functionality
-- 🎯 Skills and experience display
+- Modern, responsive design
+- Fast React.js frontend
+- Express.js backend API
+- Mobile-first responsive design
+- Portfolio showcase
+- Contact form functionality
+- Skills and experience display
 
 ## Getting Started
 
@@ -45,7 +45,6 @@ npm run dev
 
 - React.js
 - React Router
-- CSS3/SCSS
 - Responsive Design
 
 **Backend:**
