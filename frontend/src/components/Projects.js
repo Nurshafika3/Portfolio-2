@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../styles/Projects.css";
 
-// Mock data as fallback
 const mockProjects = [
   {
     id: 1,
@@ -42,6 +41,9 @@ const Projects = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(true);
+  const carouselRef = useRef(null);
 
   useEffect(() => {
     fetchProjects();
@@ -69,6 +71,39 @@ const Projects = () => {
     );
   });
 
+  const updateScrollState = () => {
+    const node = carouselRef.current;
+    if (!node) return;
+
+    const maxScroll = node.scrollWidth - node.clientWidth;
+    setCanScrollPrev(node.scrollLeft > 8);
+    setCanScrollNext(node.scrollLeft < maxScroll - 8);
+  };
+
+  useEffect(() => {
+    updateScrollState();
+  }, [filteredProjects]);
+
+  useEffect(() => {
+    const node = carouselRef.current;
+    if (!node) return;
+
+    const onResize = () => updateScrollState();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  const scrollCarousel = (direction) => {
+    const node = carouselRef.current;
+    if (!node) return;
+
+    const scrollAmount = Math.min(node.clientWidth * 0.86, 620);
+    node.scrollBy({
+      left: direction === "next" ? scrollAmount : -scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
   if (loading) {
     return (
       <section className="projects">
@@ -95,7 +130,7 @@ const Projects = () => {
         <div className="projects-header">
           <h1 className="section-title">My Projects</h1>
           <p className="section-subtitle">
-            Here are some of the projects I've worked on
+            A curated gallery of products I have designed and built
           </p>
         </div>
 
@@ -126,59 +161,87 @@ const Projects = () => {
           </button>
         </div>
 
-        <div className="projects-grid">
-          {filteredProjects.map((project) => (
-            <div key={project.id} className="project-card">
-              <div className="project-image">
-                <img
-                  src={project.imageUrl || "/placeholder-project.jpg"}
-                  alt={project.title}
-                  onError={(e) => {
-                    e.target.src =
-                      "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y1ZjVmNSIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTRweCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIG5vdCBhdmFpbGFibGU8L3RleHQ+Cjwvc3ZnPg==";
-                  }}
-                />
-                <div className="project-overlay">
-                  <div className="project-links">
-                    {project.githubUrl && (
-                      <a
-                        href={project.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="project-link"
-                      >
-                        <i className="fab fa-github"></i>
-                      </a>
-                    )}
-                    {project.liveUrl && (
-                      <a
-                        href={project.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="project-link"
-                      >
-                        <i className="fas fa-external-link-alt"></i>
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="project-content">
-                <h3 className="project-title">{project.title}</h3>
-                <p className="project-description">{project.description}</p>
-
-                <div className="project-technologies">
-                  {project.technologies.map((tech, index) => (
-                    <span key={index} className="tech-tag">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
+        {filteredProjects.length > 0 && (
+          <div className="projects-showcase">
+            <div className="projects-nav">
+              <button
+                className="projects-nav-btn"
+                onClick={() => scrollCarousel("prev")}
+                disabled={!canScrollPrev}
+                aria-label="Previous projects"
+              >
+                <span aria-hidden="true">←</span>
+              </button>
+              <button
+                className="projects-nav-btn"
+                onClick={() => scrollCarousel("next")}
+                disabled={!canScrollNext}
+                aria-label="Next projects"
+              >
+                <span aria-hidden="true">→</span>
+              </button>
             </div>
-          ))}
-        </div>
+
+            <div
+              className="projects-carousel"
+              ref={carouselRef}
+              onScroll={updateScrollState}
+            >
+              {filteredProjects.map((project) => (
+                <article key={project.id} className="project-card">
+                  <img
+                    src={project.imageUrl || "/placeholder-project.jpg"}
+                    alt={project.title}
+                    onError={(e) => {
+                      e.target.src =
+                        "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMzAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2Y1ZjVmNSIvPgogIDx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iMTRweCIgZmlsbD0iIzk5OSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkltYWdlIG5vdCBhdmFpbGFibGU8L3RleHQ+Cjwvc3ZnPg==";
+                    }}
+                  />
+
+                  <div className="project-overlay-content">
+                    <h3 className="project-title">{project.title}</h3>
+                    <p className="project-description">{project.description}</p>
+
+                    <div className="project-footer">
+                      <div className="project-technologies">
+                        {project.technologies.slice(0, 3).map((tech, index) => (
+                          <span key={index} className="tech-tag">
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+
+                      <div className="project-links">
+                        {project.githubUrl && (
+                          <a
+                            href={project.githubUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="project-link"
+                            aria-label={`${project.title} GitHub`}
+                          >
+                            <i className="fab fa-github"></i>
+                          </a>
+                        )}
+                        {project.liveUrl && (
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="project-link"
+                            aria-label={`${project.title} Live Demo`}
+                          >
+                            <i className="fas fa-arrow-up-right-from-square"></i>
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        )}
 
         {filteredProjects.length === 0 && (
           <div className="no-projects">

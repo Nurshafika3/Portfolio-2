@@ -1,10 +1,12 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Home.css";
 
 const Home = () => {
   const [activeId, setActiveId] = useState("introduction");
-  const observerRef = useRef(null);
+  const scrollPaneRef = useRef(null);
+  const observerRef  = useRef(null);
+  const isClickingRef = useRef(false); // suppress observer during programmatic scroll
 
   const profile = {
     name: "Nurshafika Binti Mohamad Nizam",
@@ -16,99 +18,132 @@ const Home = () => {
   };
 
   const socialLinks = [
-    {
-      name: "GitHub",
-      link: "https://github.com/Nurshafika3",
-      icon: "fab fa-github",
-      essential: true,
-    },
-    {
-      name: "LinkedIn",
-      link: "https://www.linkedin.com/in/nurshafika-nizam-4a572a21b",
-      icon: "fab fa-linkedin",
-      essential: true,
-    },
+    { name: "GitHub",   link: "https://github.com/Nurshafika3",                         icon: "fab fa-github",   essential: true },
+    { name: "LinkedIn", link: "https://www.linkedin.com/in/nurshafika-nizam-4a572a21b", icon: "fab fa-linkedin", essential: true },
   ];
 
   const workExperiences = [
     {
-      company: "Portfolio Projects",
-      role: "Frontend & Full Stack Developer",
-      timeframe: "2024 - Present",
+      company: "Malaysia Blockchain Infrastructure (MBI)",
+      role: "Research & Blockchain Developer [Contract]",
+      timeframe: "January 2026 - Present",
       achievements: [
-        "Built responsive React interfaces with reusable components and clear navigation.",
-        "Integrated Node.js and Express APIs for contact forms and project data management.",
-        "Improved UI consistency through modular CSS and component-based design patterns.",
+        "Built responsive React/Node.js/PostgreSQL apps with modular architecture.",
+        "Wrote clean TypeScript code (ESLint/Prettier) with 95% unit test coverage to boost reliability.",
+        "Optimized Node.js/PostgreSQL services using complex queries, indexing, and transactions to improve DB performance by 35%.",
+        "Participated in full Agile SDLC (Git, Docker, Kubernetes), delivering 10+ on-time releases with 95% success and strong stability.",
+        "Developed responsive interactive features with JavaScript, HTML, CSS, adhering to UI/UX standards.",
+        "Integrated Zetrix blockchain for credit payment processing, implementing secure wallet connections and on‑chain transaction verification.",
+      ],
+    },
+    {
+      company: "OpenEDG",
+      role: "Associate Web Developer [KYouth Programme]",
+      timeframe: "September 2025 - January 2026",
+      achievements: [
+        "Built responsive React/Node.js/PostgreSQL applications with modular architecture and developed interactive features using JavaScript, HTML, and CSS while strictly adhering to UI/UX standards.",
+        "Learned and applied best practices in frontend and backend development, including state management, API integration, and database design.",
+      ],
+    },
+    {
+      company: "BinaCloud Sdn Bhd",
+      role: "Software Engineer [Internship]",
+      timeframe: "February 2025 - August 2025",
+      achievements: [
+        "Maintained and improved web applications by debugging and resolving frontend issues, reducing page load time and enhancing user satisfaction.",
+        "Collaborated with a 2-member development team to enhance UI/UX responsiveness using React.js, Ant Design (Antd), and Tailwind CSS, ensuring seamless performance across mobile and desktop.",
+        "Designed and implemented UI/UX updates and new feature enhancements, resulting in a 15% increase in returning user engagement.",
+        "Contributed to a scalable JavaScript/TypeScript codebase by following best practices, creating reusable components, and conducting peer code reviews that improved code quality.",
       ],
     },
   ];
 
   const studies = [
     {
-      institution: "Software Engineering Learning Path",
+      institution: "Bachelor of Information Technology (Hons) in Software Engineering, University of Kuala Lumpur (UniKL)",
+      timeframe: "January 2022 - November 2025",
       description:
-        "Hands-on development in React, JavaScript, and backend fundamentals through practical projects.",
+        "This course focuses on how to design, develop, and maintain software systems. I'm learning programming, system design, and how to build real-world applications like web and mobile apps. It also covers the full software development process and includes hands-on projects and internship experience.",
+    },
+    {
+      institution: "Diploma in Computer Science, University Poly-Tech Malaysia (UPTM)",
+      timeframe: "June 2019 - November 2021",
+      description:
+        "The course gave me a strong foundation in both theory and practical computing skills, including programming, databases, networking, and web development. I also learned how to use different tools and technologies, analyze technical information, and build simple software applications. It prepared me with problem-solving and communication skills, as well as real-world exposure through projects and industrial training.",
     },
   ];
 
   const technicalSkills = [
     {
       title: "Frontend Development",
-      description:
-        "Building responsive and accessible interfaces with React, routing, and modern component architecture.",
+      description: "Building responsive and accessible interfaces with React, routing, and modern component architecture.",
       tags: ["React", "JavaScript", "CSS3", "HTML5"],
     },
     {
       title: "Backend Development",
-      description:
-        "Creating REST APIs with Node.js and Express, including routing and server-side integrations.",
+      description: "Creating REST APIs with Node.js and Express, including routing and server-side integrations.",
       tags: ["Node.js", "Express", "REST API"],
     },
   ];
 
   const toId = (value) =>
-    value
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .trim()
-      .replace(/\s+/g, "-");
+    value.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
 
   const structure = [
-    { title: "Introduction", items: [] },
-    { title: "Work", items: workExperiences.map((item) => item.company) },
-    { title: "Studies", items: studies.map((item) => item.institution) },
-    { title: "Technical Skills", items: technicalSkills.map((item) => item.title) },
+    { title: "Introduction",    items: [] },
+    { title: "Work",            items: workExperiences.map((w) => w.company) },
+    { title: "Studies",         items: studies.map((s) => s.institution) },
+    { title: "Technical Skills",items: technicalSkills.map((t) => t.title) },
   ];
 
-  // Collect all section IDs to observe
   const allSectionIds = [
     "introduction",
-    ...structure.flatMap((s) => [
-      toId(s.title),
-      ...s.items.map((item) => toId(item)),
-    ]),
-  ].filter((id, index, arr) => arr.indexOf(id) === index);
+    ...structure.flatMap((s) => [toId(s.title), ...s.items.map(toId)]),
+  ].filter((id, i, arr) => arr.indexOf(id) === i);
 
+  // ── Scroll inside the right pane using offsetTop (layout-stable)
+  const scrollToId = useCallback((id) => {
+  const pane = scrollPaneRef.current;
+  const el   = document.getElementById(id);
+  if (!pane || !el) return;
+
+  const paneRect = pane.getBoundingClientRect();
+  const elRect   = el.getBoundingClientRect();
+
+  // Use requestAnimationFrame to read position AFTER any CSS transform settles
+  requestAnimationFrame(() => {
+    const paneRect2 = pane.getBoundingClientRect();
+    const elRect2   = el.getBoundingClientRect();
+    const targetScroll = elRect2.top - paneRect2.top + pane.scrollTop - 16;
+
+    isClickingRef.current = true;
+    pane.scrollTo({ top: targetScroll, behavior: "smooth" });
+    setTimeout(() => { isClickingRef.current = false; }, 750);
+  });
+}, []);
+
+  // ── IntersectionObserver scoped to the right pane ─────────────────────────
   useEffect(() => {
-    // IntersectionObserver — detect which section is in view
+    const pane = scrollPaneRef.current;
+    if (!pane) return;
+
     observerRef.current = new IntersectionObserver(
       (entries) => {
-        // Find the topmost visible section
+        if (isClickingRef.current) return;
+
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
 
-        if (visible.length > 0) {
-          setActiveId(visible[0].target.id);
-        }
+        if (visible.length > 0) setActiveId(visible[0].target.id);
       },
       {
-        rootMargin: "-20% 0px -60% 0px", // trigger when section is ~20% from top
+        root: pane,                       // ← observe inside the pane, not window
+        rootMargin: "-10% 0px -55% 0px",
         threshold: 0,
       }
     );
 
-    // Observe all section elements
     allSectionIds.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observerRef.current.observe(el);
@@ -117,18 +152,21 @@ const Home = () => {
     return () => observerRef.current?.disconnect();
   }, []);
 
+  // ── Slide-in animation scoped to the right pane ───────────────────────────
   useEffect(() => {
-    // Slide-in animation for sections using IntersectionObserver
+    const pane = scrollPaneRef.current;
+    if (!pane) return;
+
     const slideObserver = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add("section-visible");
-            slideObserver.unobserve(entry.target); // animate once
+            slideObserver.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.1 }
+      { root: pane, threshold: 0.08 }
     );
 
     document.querySelectorAll(".about-section, .about-intro").forEach((el) => {
@@ -138,18 +176,19 @@ const Home = () => {
     return () => slideObserver.disconnect();
   }, []);
 
+  // ── TOC click ─────────────────────────────────────────────────────────────
   const handleTocClick = (e, id) => {
     e.preventDefault();
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-      setActiveId(id);
-    }
+    setActiveId(id);   // highlight immediately
+    scrollToId(id);
   };
 
   return (
+    /* about-layout fills the viewport below the navbar */
     <section className="home about-home">
-      <div className="home-container about-home-container">
+      <div className="about-layout">
+
+        {/* ── LEFT: completely static TOC ── */}
         <aside className="about-toc" aria-label="About sections">
           <h3>Contents</h3>
           <ul>
@@ -160,7 +199,6 @@ const Home = () => {
                   className={activeId === toId(section.title) ? "toc-active" : ""}
                   onClick={(e) => handleTocClick(e, toId(section.title))}
                 >
-                  {/* Sliding active indicator */}
                   <span className="toc-indicator" />
                   {section.title}
                 </a>
@@ -185,111 +223,90 @@ const Home = () => {
           </ul>
         </aside>
 
-        <div className="about-main">
-          <div className="home-content about-intro" id={toId("Introduction")}>
-            <div className="home-text">
-              <h1 className="home-title">{profile.name}</h1>
-              <h2 className="home-subtitle">{profile.role}</h2>
-              <p className="home-description">{profile.intro}</p>
+        {/* ── RIGHT: independently scrollable content pane ── */}
+        <div className="about-scroll-pane" ref={scrollPaneRef}>
+          <div className="about-main">
 
-              <div className="about-meta">
-                <span className="about-location">Location: {profile.location}</span>
-                <div className="about-language-tags">
-                  {profile.languages.map((language) => (
-                    <span key={language} className="about-tag">
-                      {language}
-                    </span>
+            {/* Introduction */}
+            <div className="home-content about-intro" id={toId("Introduction")}>
+              <div className="home-text">
+                <h1 className="home-title">{profile.name}</h1>
+                <h2 className="home-subtitle">{profile.role}</h2>
+                <p className="home-description">{profile.intro}</p>
+                <div className="about-meta">
+                  <span className="about-location">Location: {profile.location}</span>
+                  <div className="about-language-tags">
+                    {profile.languages.map((lang) => (
+                      <span key={lang} className="about-tag">{lang}</span>
+                    ))}
+                  </div>
+                </div>
+                <div className="home-buttons">
+                  <Link to="/projects" className="btn btn-primary">View My Work</Link>
+                  <Link to="/contact"  className="btn btn-secondary">Get In Touch</Link>
+                </div>
+                <div className="social-links">
+                  {socialLinks.filter((s) => s.essential).map((s) => (
+                    <a key={s.name} href={s.link} target="_blank" rel="noopener noreferrer"
+                       aria-label={s.name} title={s.name}>
+                      <i className={s.icon}></i>
+                    </a>
                   ))}
                 </div>
               </div>
+            </div>
 
-              <div className="home-buttons">
-                <Link to="/projects" className="btn btn-primary">
-                  View My Work
-                </Link>
-                <Link to="/contact" className="btn btn-secondary">
-                  Get In Touch
-                </Link>
+            {/* Work */}
+            <section className="about-section" id={toId("Work")}>
+              <h3 className="about-section-title">Work</h3>
+              <div className="about-cards">
+                {workExperiences.map((exp) => (
+                  <article key={exp.company} className="about-card" id={toId(exp.company)}>
+                    <div className="about-card-heading">
+                      <h4>{exp.company}</h4>
+                      <span>{exp.timeframe}</span>
+                    </div>
+                    <p className="about-role">{exp.role}</p>
+                    <ul>{exp.achievements.map((a) => <li key={a}>{a}</li>)}</ul>
+                  </article>
+                ))}
               </div>
+            </section>
 
-              <div className="social-links">
-                {socialLinks
-                  .filter((item) => item.essential)
-                  .map((item) => (
-                    <a
-                      key={item.name}
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label={item.name}
-                      title={item.name}
-                    >
-                      <i className={item.icon}></i>
-                    </a>
-                  ))}
+            {/* Studies */}
+            <section className="about-section" id={toId("Studies")}>
+              <h3 className="about-section-title">Studies</h3>
+              <div className="about-cards">
+                {studies.map((s) => (
+                  <article key={s.institution} className="about-card" id={toId(s.institution)}>
+                    <h4>{s.institution}</h4>
+                    <p>{s.description}</p>
+                  </article>
+                ))}
               </div>
-            </div>
-          </div>
+            </section>
 
-          <section className="about-section" id={toId("Work")}>
-            <h3 className="about-section-title">Work</h3>
-            <div className="about-cards">
-              {workExperiences.map((experience) => (
-                <article key={experience.company} className="about-card">
-                  <div className="about-card-heading">
-                    <h4 id={toId(experience.company)}>{experience.company}</h4>
-                    <span>{experience.timeframe}</span>
-                  </div>
-                  <p className="about-role">{experience.role}</p>
-                  <ul>
-                    {experience.achievements.map((achievement) => (
-                      <li key={achievement}>{achievement}</li>
-                    ))}
-                  </ul>
-                </article>
-              ))}
-            </div>
-          </section>
+            {/* Technical Skills */}
+            <section className="about-section" id={toId("Technical Skills")}>
+              <h3 className="about-section-title">Technical Skills</h3>
+              <div className="about-cards">
+                {technicalSkills.map((sk) => (
+                  <article key={sk.title} className="about-card" id={toId(sk.title)}>
+                    <h4>{sk.title}</h4>
+                    <p>{sk.description}</p>
+                    <div className="about-skill-tags">
+                      {sk.tags.map((tag) => (
+                        <span key={tag} className="about-tag">{tag}</span>
+                      ))}
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
 
-          <section className="about-section" id={toId("Studies")}>
-            <h3 className="about-section-title">Studies</h3>
-            <div className="about-cards">
-              {studies.map((study) => (
-                <article key={study.institution} className="about-card">
-                  <h4 id={toId(study.institution)}>{study.institution}</h4>
-                  <p>{study.description}</p>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <section className="about-section" id={toId("Technical Skills")}>
-            <h3 className="about-section-title">Technical Skills</h3>
-            <div className="about-cards">
-              {technicalSkills.map((skill) => (
-                <article key={skill.title} className="about-card">
-                  <h4 id={toId(skill.title)}>{skill.title}</h4>
-                  <p>{skill.description}</p>
-                  <div className="about-skill-tags">
-                    {skill.tags.map((tag) => (
-                      <span key={tag} className="about-tag">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </article>
-              ))}
-            </div>
-          </section>
-
-          <div className="scroll-indicator">
-            <div className="scroll-down" aria-hidden="true">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
           </div>
         </div>
+
       </div>
     </section>
   );
