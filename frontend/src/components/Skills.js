@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
 import "../styles/Skills.css";
 
-// Mock data as fallback
-const mockSkills = {
+const skills = {
   frontend: [
     { name: "React.js", level: 90, icon: "fab fa-react" },
     { name: "JavaScript", level: 85, icon: "fab fa-js-square" },
@@ -31,48 +29,6 @@ const mockSkills = {
 };
 
 const Skills = () => {
-  const [skills, setSkills] = useState({});
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    fetchSkills();
-  }, []);
-
-  const fetchSkills = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get("/api/skills");
-      setSkills(response.data);
-    } catch (err) {
-      console.log("API not available, using mock data");
-      setSkills(mockSkills);
-      setError(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return (
-      <section className="skills">
-        <div className="container">
-          <div className="loading">Loading skills...</div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="skills">
-        <div className="container">
-          <div className="error">{error}</div>
-        </div>
-      </section>
-    );
-  }
-
   const SkillBar = ({ skill }) => (
     <div className="skill-item">
       <div className="skill-header">

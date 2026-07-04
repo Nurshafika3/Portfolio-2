@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
 import "../styles/Projects.css";
 
-const mockProjects = [
+const projects = [
   {
     id: 1,
-    title: "E-Commerce Website",
+    title: "SBarber Website",
     description:
-      "A full-stack e-commerce application built with React and Node.js",
+      "A full-stack SBarber application built with React and Node.js",
     technologies: ["React", "Node.js", "MongoDB", "Express"],
-    githubUrl: "https://github.com/yourusername/ecommerce-app",
-    liveUrl: "https://your-ecommerce-app.com",
+    githubUrl: "https://github.com/Nurshafika3/SBarber-Website",
+    liveUrl: "https://your-sbarber-website.com",
     imageUrl: "/images/project1.jpg",
     featured: true,
   },
@@ -37,31 +36,10 @@ const mockProjects = [
 ];
 
 const Projects = () => {
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [filter, setFilter] = useState("all");
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(true);
   const carouselRef = useRef(null);
-
-  useEffect(() => {
-    fetchProjects();
-  }, []);
-
-  const fetchProjects = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get("/api/projects");
-      setProjects(response.data);
-    } catch (err) {
-      console.log("API not available, using mock data");
-      setProjects(mockProjects);
-      setError(null);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const filteredProjects = projects.filter((project) => {
     if (filter === "all") return true;
@@ -103,26 +81,6 @@ const Projects = () => {
       behavior: "smooth",
     });
   };
-
-  if (loading) {
-    return (
-      <section className="projects">
-        <div className="container">
-          <div className="loading">Loading projects...</div>
-        </div>
-      </section>
-    );
-  }
-
-  if (error) {
-    return (
-      <section className="projects">
-        <div className="container">
-          <div className="error">{error}</div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="projects">
