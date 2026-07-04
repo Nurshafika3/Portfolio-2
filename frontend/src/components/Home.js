@@ -2,6 +2,85 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Home.css";
 
+const workExperiences = [
+  {
+    company: "Malaysia Blockchain Infrastructure (MBI)",
+    role: "Research & Blockchain Developer [Contract]",
+    timeframe: "January 2026 - Present",
+    achievements: [
+      "Built responsive React/Node.js/PostgreSQL apps with modular architecture.",
+      "Wrote clean TypeScript code (ESLint/Prettier) with 95% unit test coverage to boost reliability.",
+      "Optimized Node.js/PostgreSQL services using complex queries, indexing, and transactions to improve DB performance by 35%.",
+      "Participated in full Agile SDLC (Git, Docker, Kubernetes), delivering 10+ on-time releases with 95% success and strong stability.",
+      "Developed responsive interactive features with JavaScript, HTML, CSS, adhering to UI/UX standards.",
+      "Integrated Zetrix blockchain for credit payment processing, implementing secure wallet connections and on‑chain transaction verification.",
+    ],
+  },
+  {
+    company: "OpenEDG",
+    role: "Associate Web Developer [KYouth Programme]",
+    timeframe: "September 2025 - January 2026",
+    achievements: [
+      "Built responsive React/Node.js/PostgreSQL applications with modular architecture and developed interactive features using JavaScript, HTML, and CSS while strictly adhering to UI/UX standards.",
+      "Learned and applied best practices in frontend and backend development, including state management, API integration, and database design.",
+    ],
+  },
+  {
+    company: "BinaCloud Sdn Bhd",
+    role: "Software Engineer [Internship]",
+    timeframe: "February 2025 - August 2025",
+    achievements: [
+      "Maintained and improved web applications by debugging and resolving frontend issues, reducing page load time and enhancing user satisfaction.",
+      "Collaborated with a 2-member development team to enhance UI/UX responsiveness using React.js, Ant Design (Antd), and Tailwind CSS, ensuring seamless performance across mobile and desktop.",
+      "Designed and implemented UI/UX updates and new feature enhancements, resulting in a 15% increase in returning user engagement.",
+      "Contributed to a scalable JavaScript/TypeScript codebase by following best practices, creating reusable components, and conducting peer code reviews that improved code quality.",
+    ],
+  },
+];
+
+const studies = [
+  {
+    institution: "Bachelor of Information Technology (Hons) in Software Engineering, University of Kuala Lumpur (UniKL)",
+    timeframe: "January 2022 - November 2025",
+    description:
+      "This course focuses on how to design, develop, and maintain software systems. I'm learning programming, system design, and how to build real-world applications like web and mobile apps. It also covers the full software development process and includes hands-on projects and internship experience.",
+  },
+  {
+    institution: "Diploma in Computer Science, University Poly-Tech Malaysia (UPTM)",
+    timeframe: "June 2019 - November 2021",
+    description:
+      "The course gave me a strong foundation in both theory and practical computing skills, including programming, databases, networking, and web development. I also learned how to use different tools and technologies, analyze technical information, and build simple software applications. It prepared me with problem-solving and communication skills, as well as real-world exposure through projects and industrial training.",
+  },
+];
+
+const technicalSkills = [
+  {
+    title: "Frontend Development",
+    description: "Building responsive and accessible interfaces with React, routing, and modern component architecture.",
+    tags: ["React", "JavaScript", "CSS3", "HTML5"],
+  },
+  {
+    title: "Backend Development",
+    description: "Creating REST APIs with Node.js and Express, including routing and server-side integrations.",
+    tags: ["Node.js", "Express", "REST API"],
+  },
+];
+
+const toId = (value) =>
+  value.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
+
+const structure = [
+  { title: "Introduction",    items: [] },
+  { title: "Work",            items: workExperiences.map((w) => w.company) },
+  { title: "Studies",         items: studies.map((s) => s.institution) },
+  { title: "Technical Skills",items: technicalSkills.map((t) => t.title) },
+];
+
+const allSectionIds = [
+  "introduction",
+  ...structure.flatMap((s) => [toId(s.title), ...s.items.map(toId)]),
+].filter((id, i, arr) => arr.indexOf(id) === i);
+
 const Home = () => {
   const [activeId, setActiveId] = useState("introduction");
   const scrollPaneRef = useRef(null);
@@ -22,93 +101,11 @@ const Home = () => {
     { name: "LinkedIn", link: "https://www.linkedin.com/in/nurshafika-nizam-4a572a21b", icon: "fab fa-linkedin", essential: true },
   ];
 
-  const workExperiences = [
-    {
-      company: "Malaysia Blockchain Infrastructure (MBI)",
-      role: "Research & Blockchain Developer [Contract]",
-      timeframe: "January 2026 - Present",
-      achievements: [
-        "Built responsive React/Node.js/PostgreSQL apps with modular architecture.",
-        "Wrote clean TypeScript code (ESLint/Prettier) with 95% unit test coverage to boost reliability.",
-        "Optimized Node.js/PostgreSQL services using complex queries, indexing, and transactions to improve DB performance by 35%.",
-        "Participated in full Agile SDLC (Git, Docker, Kubernetes), delivering 10+ on-time releases with 95% success and strong stability.",
-        "Developed responsive interactive features with JavaScript, HTML, CSS, adhering to UI/UX standards.",
-        "Integrated Zetrix blockchain for credit payment processing, implementing secure wallet connections and on‑chain transaction verification.",
-      ],
-    },
-    {
-      company: "OpenEDG",
-      role: "Associate Web Developer [KYouth Programme]",
-      timeframe: "September 2025 - January 2026",
-      achievements: [
-        "Built responsive React/Node.js/PostgreSQL applications with modular architecture and developed interactive features using JavaScript, HTML, and CSS while strictly adhering to UI/UX standards.",
-        "Learned and applied best practices in frontend and backend development, including state management, API integration, and database design.",
-      ],
-    },
-    {
-      company: "BinaCloud Sdn Bhd",
-      role: "Software Engineer [Internship]",
-      timeframe: "February 2025 - August 2025",
-      achievements: [
-        "Maintained and improved web applications by debugging and resolving frontend issues, reducing page load time and enhancing user satisfaction.",
-        "Collaborated with a 2-member development team to enhance UI/UX responsiveness using React.js, Ant Design (Antd), and Tailwind CSS, ensuring seamless performance across mobile and desktop.",
-        "Designed and implemented UI/UX updates and new feature enhancements, resulting in a 15% increase in returning user engagement.",
-        "Contributed to a scalable JavaScript/TypeScript codebase by following best practices, creating reusable components, and conducting peer code reviews that improved code quality.",
-      ],
-    },
-  ];
-
-  const studies = [
-    {
-      institution: "Bachelor of Information Technology (Hons) in Software Engineering, University of Kuala Lumpur (UniKL)",
-      timeframe: "January 2022 - November 2025",
-      description:
-        "This course focuses on how to design, develop, and maintain software systems. I'm learning programming, system design, and how to build real-world applications like web and mobile apps. It also covers the full software development process and includes hands-on projects and internship experience.",
-    },
-    {
-      institution: "Diploma in Computer Science, University Poly-Tech Malaysia (UPTM)",
-      timeframe: "June 2019 - November 2021",
-      description:
-        "The course gave me a strong foundation in both theory and practical computing skills, including programming, databases, networking, and web development. I also learned how to use different tools and technologies, analyze technical information, and build simple software applications. It prepared me with problem-solving and communication skills, as well as real-world exposure through projects and industrial training.",
-    },
-  ];
-
-  const technicalSkills = [
-    {
-      title: "Frontend Development",
-      description: "Building responsive and accessible interfaces with React, routing, and modern component architecture.",
-      tags: ["React", "JavaScript", "CSS3", "HTML5"],
-    },
-    {
-      title: "Backend Development",
-      description: "Creating REST APIs with Node.js and Express, including routing and server-side integrations.",
-      tags: ["Node.js", "Express", "REST API"],
-    },
-  ];
-
-  const toId = (value) =>
-    value.toLowerCase().replace(/[^a-z0-9\s-]/g, "").trim().replace(/\s+/g, "-");
-
-  const structure = [
-    { title: "Introduction",    items: [] },
-    { title: "Work",            items: workExperiences.map((w) => w.company) },
-    { title: "Studies",         items: studies.map((s) => s.institution) },
-    { title: "Technical Skills",items: technicalSkills.map((t) => t.title) },
-  ];
-
-  const allSectionIds = [
-    "introduction",
-    ...structure.flatMap((s) => [toId(s.title), ...s.items.map(toId)]),
-  ].filter((id, i, arr) => arr.indexOf(id) === i);
-
   // ── Scroll inside the right pane using offsetTop (layout-stable)
   const scrollToId = useCallback((id) => {
   const pane = scrollPaneRef.current;
   const el   = document.getElementById(id);
   if (!pane || !el) return;
-
-  const paneRect = pane.getBoundingClientRect();
-  const elRect   = el.getBoundingClientRect();
 
   // Use requestAnimationFrame to read position AFTER any CSS transform settles
   requestAnimationFrame(() => {

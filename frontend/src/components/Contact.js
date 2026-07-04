@@ -24,7 +24,7 @@ const Contact = () => {
     setStatus("");
 
     try {
-      const response = await axios.post("/api/contact", formData);
+      await axios.post("/api/contact", formData);
       setStatus("success");
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
